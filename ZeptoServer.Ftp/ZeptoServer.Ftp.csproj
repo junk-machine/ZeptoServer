@@ -1,0 +1,152 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{82D632AE-F6F5-46B8-AC62-9513DE4B33F9}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>ZeptoServer.Ftp</RootNamespace>
+    <AssemblyName>ZeptoServer.Ftp</AssemblyName>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Commands\AbortFileTransferCommand.cs" />
+    <Compile Include="Commands\AllocateCommand.cs" />
+    <Compile Include="Commands\AppendFileCommand.cs" />
+    <Compile Include="Commands\ChangeDirectoryUpCommand.cs" />
+    <Compile Include="Commands\ChangeWorkingDirectoryCommand.cs" />
+    <Compile Include="Commands\DeleteFileCommand.cs" />
+    <Compile Include="Commands\FeaturesCommand.cs" />
+    <Compile Include="Commands\FileSizeCommand.cs" />
+    <Compile Include="Commands\FileStructureCommand.cs" />
+    <Compile Include="Commands\FtpAuthorizedCommandBase.cs" />
+    <Compile Include="Commands\FtpCommandBase.cs" />
+    <Compile Include="Commands\FtpDataCommandBase.cs" />
+    <Compile Include="Commands\FtpFileTransferCommandBase.cs" />
+    <Compile Include="Commands\FtpPathCommandBase.cs" />
+    <Compile Include="Commands\IFtpCommand.cs" />
+    <Compile Include="Commands\ListFileNamesCommand.cs" />
+    <Compile Include="Commands\ListFilesCommand.cs" />
+    <Compile Include="Commands\MakeDirectoryCommand.cs" />
+    <Compile Include="Commands\ModifiedTimeCommand.cs" />
+    <Compile Include="Commands\NoOperationCommand.cs" />
+    <Compile Include="Commands\OptionsCommand.cs" />
+    <Compile Include="Commands\PassiveModeCommand.cs" />
+    <Compile Include="Commands\PasswordCommand.cs" />
+    <Compile Include="Commands\PortCommand.cs" />
+    <Compile Include="Commands\PrintWorkingDirectoryCommand.cs" />
+    <Compile Include="Commands\QuitCommand.cs" />
+    <Compile Include="Commands\ReinitializeCommand.cs" />
+    <Compile Include="Commands\RemoveDirectoryCommand.cs" />
+    <Compile Include="Commands\RenameFromCommand.cs" />
+    <Compile Include="Commands\RenameToCommand.cs" />
+    <Compile Include="Commands\RestartFileTransferCommand.cs" />
+    <Compile Include="Commands\RetrieveFileCommand.cs" />
+    <Compile Include="Commands\StoreFileCommand.cs" />
+    <Compile Include="Commands\SystemTypeCommand.cs" />
+    <Compile Include="Commands\TransferModeCommand.cs" />
+    <Compile Include="Commands\TransferTypeCommand.cs" />
+    <Compile Include="Commands\UserCommand.cs" />
+    <Compile Include="Configuration\FtpUser.cs" />
+    <Compile Include="Data\ActiveDataChannel.cs" />
+    <Compile Include="Data\DataChannelBase.cs" />
+    <Compile Include="Data\IDataChannel.cs" />
+    <Compile Include="Data\PassiveDataChannel.cs" />
+    <Compile Include="Data\StreamTracer.cs" />
+    <Compile Include="FileSystems\FileSystemItem.cs" />
+    <Compile Include="FileSystems\IFileSystem.cs" />
+    <Compile Include="FileSystems\NotEnoughSpaceException.cs" />
+    <Compile Include="FileSystems\VirtualPath.cs" />
+    <Compile Include="FileTransferType.cs" />
+    <Compile Include="FtpCommands.Designer.cs">
+      <DependentUpon>FtpCommands.resx</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Include="FtpMessages.Designer.cs">
+      <DependentUpon>FtpMessages.resx</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Include="FtpOptions.Designer.cs">
+      <DependentUpon>FtpOptions.resx</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Include="FtpResponses.cs" />
+    <Compile Include="FtpServer.cs" />
+    <Compile Include="FtpServerFactory.cs" />
+    <Compile Include="FtpServerOptions.cs" />
+    <Compile Include="FtpSessionState.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="StreamExtensions.cs" />
+    <Compile Include="TraceResources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>TraceResources.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="FtpCommands.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>FtpCommands.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FtpMessages.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>FtpMessages.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FtpOptions.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>FtpOptions.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="TraceResources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>TraceResources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\ZeptoServer.Telnet\ZeptoServer.Telnet.csproj">
+      <Project>{9cdaf682-819b-413a-9e19-b6fe4121145c}</Project>
+      <Name>ZeptoServer.Telnet</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ZeptoServer\ZeptoServer.csproj">
+      <Project>{23242603-481D-467A-B6AE-6CC44E0B0AFF}</Project>
+      <Name>ZeptoServer</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

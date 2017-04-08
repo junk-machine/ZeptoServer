@@ -1,0 +1,52 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.25420.1
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ZeptoServer.ServiceHost", "ZeptoServer.ServiceHost\ZeptoServer.ServiceHost.csproj", "{0F14FFDB-971A-40EA-B6EE-1FFB3168386B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ZeptoServer.Telnet", "ZeptoServer.Telnet\ZeptoServer.Telnet.csproj", "{9CDAF682-819B-413A-9E19-B6FE4121145C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ZeptoServer.Ftp", "ZeptoServer.Ftp\ZeptoServer.Ftp.csproj", "{82D632AE-F6F5-46B8-AC62-9513DE4B33F9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ZeptoServer.Ftp.LocalFileSystem", "ZeptoServer.Ftp.LocalFileSystem\ZeptoServer.Ftp.LocalFileSystem.csproj", "{DAA635CC-3F88-438C-AA1A-AE8B3BC601C9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ZeptoServer.TextLogger", "ZeptoServer.TextLogger\ZeptoServer.TextLogger.csproj", "{1BF1B5FF-D748-4155-A2A1-98AABFB3730F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ZeptoServer", "ZeptoServer\ZeptoServer.csproj", "{23242603-481D-467A-B6AE-6CC44E0B0AFF}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{0F14FFDB-971A-40EA-B6EE-1FFB3168386B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0F14FFDB-971A-40EA-B6EE-1FFB3168386B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0F14FFDB-971A-40EA-B6EE-1FFB3168386B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0F14FFDB-971A-40EA-B6EE-1FFB3168386B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9CDAF682-819B-413A-9E19-B6FE4121145C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9CDAF682-819B-413A-9E19-B6FE4121145C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9CDAF682-819B-413A-9E19-B6FE4121145C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9CDAF682-819B-413A-9E19-B6FE4121145C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{82D632AE-F6F5-46B8-AC62-9513DE4B33F9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{82D632AE-F6F5-46B8-AC62-9513DE4B33F9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{82D632AE-F6F5-46B8-AC62-9513DE4B33F9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{82D632AE-F6F5-46B8-AC62-9513DE4B33F9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DAA635CC-3F88-438C-AA1A-AE8B3BC601C9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DAA635CC-3F88-438C-AA1A-AE8B3BC601C9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DAA635CC-3F88-438C-AA1A-AE8B3BC601C9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DAA635CC-3F88-438C-AA1A-AE8B3BC601C9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1BF1B5FF-D748-4155-A2A1-98AABFB3730F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1BF1B5FF-D748-4155-A2A1-98AABFB3730F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1BF1B5FF-D748-4155-A2A1-98AABFB3730F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1BF1B5FF-D748-4155-A2A1-98AABFB3730F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{23242603-481D-467A-B6AE-6CC44E0B0AFF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{23242603-481D-467A-B6AE-6CC44E0B0AFF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{23242603-481D-467A-B6AE-6CC44E0B0AFF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{23242603-481D-467A-B6AE-6CC44E0B0AFF}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
