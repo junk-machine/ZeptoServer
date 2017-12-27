@@ -91,6 +91,9 @@ namespace ZeptoServer
             // Listen for another connections right away
             socket.BeginAccept(EndAccept, socket);
 
+            // Disable Nagle algorithm for control channel
+            clientSocket.NoDelay = true;
+
             // Create logger scope for the connection
             var loggerScope = new LoggerScope(clientSocket.RemoteEndPoint, logger);
 

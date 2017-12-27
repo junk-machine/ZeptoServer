@@ -24,10 +24,11 @@ namespace ZeptoServer.ServiceHost
                 && RunAsConsoleSwitch.Equals(args[0], StringComparison.Ordinal))
             {
                 // Interactive mode
-                using (var host = new ZeptoServerHost())
+                using (var stopTokenSource = new CancellationTokenSource())
                 {
-                    new Thread(host.Start).Start();
+                    Run(stopTokenSource.Token);
                     Console.ReadLine();
+                    stopTokenSource.Cancel();
                 }
             }
             else
@@ -38,6 +39,15 @@ namespace ZeptoServer.ServiceHost
                     ServiceBase.Run(service);
                 }
             }
+        }
+
+        /// <summary>
+        /// Runs the server host asynchronously.
+        /// </summary>
+        /// <param name="stopToken">Cancellation token to indicate stop request</param>
+        private static async void Run(CancellationToken stopToken)
+        {
+            await new ZeptoServerHost().Run(stopToken);
         }
     }
 }

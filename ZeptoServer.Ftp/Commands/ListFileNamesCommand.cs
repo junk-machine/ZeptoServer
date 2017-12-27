@@ -60,12 +60,14 @@ namespace ZeptoServer.Ftp.Commands
 
             foreach (var item in items)
             {
-                recordBuffer = session.ControlEncoding.GetBytes(item.Name);
+                recordBuffer = session.PathEncoding.GetBytes(item.Name);
                 await dataStream.WriteAsync(recordBuffer, 0, recordBuffer.Length);
                 await dataStream.WriteAsync(session.LineFeed, 0, session.LineFeed.Length);
             }
 
             await dataStream.WriteAsync(session.LineFeed, 0, session.LineFeed.Length);
+
+            await dataStream.FlushAsync();
 
             return FtpResponses.TransferComplete;
         }

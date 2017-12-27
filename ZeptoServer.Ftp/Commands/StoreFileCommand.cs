@@ -80,6 +80,8 @@ namespace ZeptoServer.Ftp.Commands
             try
             {
                 await dataStream.CopyToAsync(fileStream);
+                await fileStream.FlushAsync();
+
                 return FtpResponses.TransferComplete;
             }
             catch (NotEnoughSpaceException)

@@ -20,7 +20,7 @@ namespace ZeptoServer.Ftp.Commands
         /// <summary>
         /// Separator character for columns in the output.
         /// </summary>
-        private const char ColumnSeparator = '\t';
+        private const char ColumnSeparator = ' ';
 
         /// <summary>
         /// File extensions of executable files.
@@ -28,14 +28,24 @@ namespace ZeptoServer.Ftp.Commands
         private const string ExecutableExtension = ".exe";
 
         /// <summary>
-        /// Format for the item last modification timestamp.
+        /// Last modification timestamp format for the item that was modified recently.
         /// </summary>
-        private const string TimestampFormat = "yyyy'-'MM'-'dd HH':'mm':'ss";
+        private const string RecentTimestampFormat = "MMM d HH':'mm";
+
+        /// <summary>
+        /// Last modification timestamp format for the item that was modified long ago.
+        /// </summary>
+        private const string OldTimestampFormat = "MMM d yyyy";
 
         /// <summary>
         /// Command argument to list all items in the current folder.
         /// </summary>
         private const string ListAll = "-a";
+
+        /// <summary>
+        /// Time period to consider files modified recently.
+        /// </summary>
+        private static readonly TimeSpan RecentPeriod = TimeSpan.FromDays(180);
 
         /// <summary>
         /// Enumerates list of items in the directory and sends them to the client over the data channel.
@@ -87,6 +97,8 @@ namespace ZeptoServer.Ftp.Commands
             var record = new StringBuilder(128);
             byte[] recordBuffer;
 
+            var now = DateTime.UtcNow;
+
             foreach (var item in items)
             {
                 // Permissions
@@ -115,13 +127,17 @@ namespace ZeptoServer.Ftp.Commands
                 record.Append(ColumnSeparator);
 
                 // Last modification timestamp
-                record.Append(item.LastModifiedTime.ToString(TimestampFormat, CultureInfo.InvariantCulture));
+                record.Append(
+                    item.LastModifiedTime.ToString(
+                        now - item.LastModifiedTime < RecentPeriod
+                            ? RecentTimestampFormat : OldTimestampFormat,
+                        CultureInfo.InvariantCulture));
                 record.Append(ColumnSeparator);
 
                 // Name
                 record.Append(item.Name);
 
-                recordBuffer = session.ControlEncoding.GetBytes(record.ToString());
+                recordBuffer = session.PathEncoding.GetBytes(record.ToString());
                 await dataStream.WriteAsync(recordBuffer, 0, recordBuffer.Length);
                 await dataStream.WriteAsync(session.LineFeed, 0, session.LineFeed.Length);
 
@@ -129,6 +145,8 @@ namespace ZeptoServer.Ftp.Commands
             }
             
             await dataStream.WriteAsync(session.LineFeed, 0, session.LineFeed.Length);
+
+            await dataStream.FlushAsync();
 
             return FtpResponses.TransferComplete;
         }

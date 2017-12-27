@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Configuration;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Markup;
 using ZeptoServer.ServiceHost.Configuration;
 
@@ -9,27 +10,19 @@ namespace ZeptoServer.ServiceHost
     /// <summary>
     /// Starts and stops the server.
     /// </summary>
-    internal sealed class ZeptoServerHost : IDisposable
+    internal sealed class ZeptoServerHost
     {
-        private ManualResetEventSlim stopEvent;
-
         /// <summary>
         /// Name of the ZeptoServer configuration section.
         /// </summary>
         private const string ZeptoServerConfigurationSectionName = "ZeptoServer";
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ZeptoServerHost"/> class.
-        /// </summary>
-        public ZeptoServerHost()
-        {
-            stopEvent = new ManualResetEventSlim();
-        }
-
-        /// <summary>
         /// Starts the server.
         /// </summary>
-        public void Start()
+        /// <param name="cancelToken">Cancellation token to signal stop request</param>
+        /// <returns>A <see cref="Task"/> that represents asyncrhonous hosting.</returns>
+        public async Task Run(CancellationToken cancelToken)
         {
             var configSection =
                 ConfigurationManager.GetSection(ZeptoServerConfigurationSectionName)
@@ -49,29 +42,14 @@ namespace ZeptoServer.ServiceHost
                     throw Errors.RootIsNotServerHost();
                 }
 
-                stopEvent.Wait();
-            }
-        }
-
-        /// <summary>
-        /// Stops the service.
-        /// </summary>
-        public void Stop()
-        {
-            stopEvent.Set();
-        }
-
-        /// <summary>
-        /// Stops the server and releases all resources.
-        /// </summary>
-        public void Dispose()
-        {
-            var disposable = Interlocked.Exchange(ref stopEvent, null);
-
-            if (disposable != null)
-            {
-                disposable.Set();
-                disposable.Dispose();
+                try
+                {
+                    await Task.Delay(-1, cancelToken);
+                }
+                catch (OperationCanceledException)
+                {
+                    // Stop requested
+                }
             }
         }
     }

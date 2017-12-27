@@ -193,8 +193,8 @@ namespace ZeptoServer
                 {
                     try
                     {
-                        dataStream.Close();
-                        dataStream.Dispose();
+                        disposable.Close();
+                        disposable.Dispose();
                     }
                     catch
                     {

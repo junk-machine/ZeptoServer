@@ -73,6 +73,8 @@ namespace ZeptoServer.Ftp.Commands
         private async Task<IResponse> SendFile(Stream dataStream, FtpSessionState session, Stream fileStream)
         {
             await fileStream.CopyToAsync(dataStream);
+            await dataStream.FlushAsync();
+
             return FtpResponses.TransferComplete;
         }
     }

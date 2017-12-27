@@ -13,29 +13,29 @@ namespace ZeptoServer.ServiceHost
     public sealed class ZeptoServerService : ServiceBase
     {
         /// <summary>
-        /// ZeptoServer host.
+        /// Cancellation token source to signal the service to stop.
         /// </summary>
-        private ZeptoServerHost serverHost;
+        private CancellationTokenSource stopTokenSource;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ZeptoServerService"/> class.
         /// </summary>
         public ZeptoServerService()
         {
-            serverHost = new ZeptoServerHost();
+            stopTokenSource = new CancellationTokenSource();
         }
 
         /// <summary>
         /// Starts the server.
         /// </summary>
         /// <param name="args">Command line arguments</param>
-        protected override void OnStart(string[] args)
+        protected override async void OnStart(string[] args)
         {
             EventLog.Source = GetServiceName();
 
             try
             {
-                serverHost.Start();
+                await new ZeptoServerHost().Run(stopTokenSource.Token);
             }
             catch (Exception error)
             {
@@ -74,7 +74,7 @@ namespace ZeptoServer.ServiceHost
         /// </summary>
         protected override void OnStop()
         {
-            serverHost.Stop();
+            stopTokenSource.Cancel();
         }
 
         /// <summary>
@@ -87,10 +87,11 @@ namespace ZeptoServer.ServiceHost
         {
             if (disposing)
             {
-                var disposable = Interlocked.Exchange(ref serverHost, null);
+                var disposable = Interlocked.Exchange(ref stopTokenSource, null);
 
                 if (disposable != null)
                 {
+                    disposable.Cancel();
                     disposable.Dispose();
                 }
             }
