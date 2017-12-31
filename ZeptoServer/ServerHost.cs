@@ -17,6 +17,11 @@ namespace ZeptoServer
         const int ConnectionQueue = 10;
 
         /// <summary>
+        /// tcp_keepalive structure for SIO_KEEPALIVE_VALS socket setting.
+        /// </summary>
+        private readonly byte[] keepAliveSettings;
+
+        /// <summary>
         /// Light-weight servers factory.
         /// </summary>
         private readonly IServerFactory serverFactory;
@@ -36,9 +41,10 @@ namespace ZeptoServer
         /// with the provided end-point, server factory and logger.
         /// </summary>
         /// <param name="endPoint">Listener end-point</param>
+        /// <param name="keepAliveInterval">Interval in seconds to send TCP keepalive packets</param>
         /// <param name="serverFactory">Server factory</param>
         /// <param name="logger">Current logger instance</param>
-        public ServerHost(IPEndPoint endPoint, IServerFactory serverFactory, ILogger logger)
+        public ServerHost(IPEndPoint endPoint, int keepAliveInterval, IServerFactory serverFactory, ILogger logger)
         {
             if (endPoint == null)
             {
@@ -57,6 +63,29 @@ namespace ZeptoServer
 
             this.serverFactory = serverFactory;
             this.logger = logger;
+
+            if (keepAliveInterval > 0)
+            {
+                // Convert to milliseconds
+                keepAliveInterval *= 1000;
+
+                keepAliveSettings =
+                    new byte[]
+                    {
+                        // onoff
+                        1, 0, 0, 0,
+                        // keepalivetime
+                        (byte)(keepAliveInterval & 255),
+                        (byte)(keepAliveInterval >> 8 & 255),
+                        (byte)(keepAliveInterval >> 16 & 255),
+                        (byte)(keepAliveInterval >> 24 & 255),
+                        // keepaliveinterval
+                        (byte)(keepAliveInterval & 255),
+                        (byte)(keepAliveInterval >> 8 & 255),
+                        (byte)(keepAliveInterval >> 16 & 255),
+                        (byte)(keepAliveInterval >> 24 & 255)
+                    };
+            }
 
             socket = new Socket(endPoint.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
 
@@ -93,6 +122,12 @@ namespace ZeptoServer
 
             // Disable Nagle algorithm for control channel
             clientSocket.NoDelay = true;
+
+            // Enable TCP keepalive for control channel
+            if (keepAliveSettings != null)
+            {
+                clientSocket.IOControl(IOControlCode.KeepAliveValues, keepAliveSettings, null);
+            }
 
             // Create logger scope for the connection
             var loggerScope = new LoggerScope(clientSocket.RemoteEndPoint, logger);
