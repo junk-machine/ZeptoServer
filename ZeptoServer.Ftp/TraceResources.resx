@@ -129,6 +129,10 @@
   <data name="CommandNotSupported" xml:space="preserve">
     <value>Command is not supported</value>
   </data>
+  <data name="CouldNotResolvePublicAddressFormat" xml:space="preserve">
+    <value>Failed to resolved public IP address for the host "{0}": {1}. Socket address "{2}" will be used as an address of the server.</value>
+    <comment>0 is host; 1 is error message; 2 is IP address</comment>
+  </data>
   <data name="PassiveModeConnected" xml:space="preserve">
     <value>Client connected</value>
   </data>

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading.Tasks;
@@ -53,9 +54,12 @@ namespace ZeptoServer.Ftp
 
             this.supportedCommands = supportedCommands;
 
+            var localServerAddress = ((IPEndPoint)socket.LocalEndPoint).Address;
+
             session =
                 new FtpSessionState(
-                    ((IPEndPoint)socket.LocalEndPoint).Address,
+                    localServerAddress,
+                    GetPublicAddress(localServerAddress, serverOptions, logger),
                     this,
                     serverOptions,
                     logger);
@@ -97,6 +101,41 @@ namespace ZeptoServer.Ftp
                 session.Logger.WriteWarning(TraceResources.CommandNotSupported);
                 await Send(FtpResponses.NotImplemented);
             }
+        }
+
+        /// <summary>
+        /// Retrieves the public IP address of the server to use in passive mode.
+        /// </summary>
+        /// <param name="localIpAddress">Local IP address of the server</param>
+        /// <param name="serverOptions">FTP server options</param>
+        /// <param name="logger">Current logger instance</param>
+        /// <returns>Public IP address of the server.</returns>
+        private IPAddress GetPublicAddress(IPAddress localIpAddress, FtpServerOptions serverOptions, ILogger logger)
+        {
+            var publicIpAddress = localIpAddress;
+
+            if (!String.IsNullOrEmpty(serverOptions.PublicAddress)
+                && !IPAddress.TryParse(serverOptions.PublicAddress, out publicIpAddress))
+            {
+                // Try resolve provided host name to IPv4 address
+                try
+                {
+                    publicIpAddress =
+                        Dns.GetHostEntry(serverOptions.PublicAddress)
+                            .AddressList
+                            .First(a => a.AddressFamily == AddressFamily.InterNetwork);
+                }
+                catch (Exception error)
+                {
+                    logger.WriteWarning(
+                        TraceResources.CouldNotResolvePublicAddressFormat,
+                        serverOptions.PublicAddress,
+                        error.Message,
+                        publicIpAddress);
+                }
+            }
+
+            return publicIpAddress;
         }
     }
 }

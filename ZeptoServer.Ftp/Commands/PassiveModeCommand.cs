@@ -30,7 +30,7 @@ namespace ZeptoServer.Ftp.Commands
                 
             return
                 FtpResponses.PassiveMode(
-                    channel.EndPoint.Address.GetAddressBytes(),
+                    session.PublicServerAddress.GetAddressBytes(),
                     channel.EndPoint.Port);
         }
     }

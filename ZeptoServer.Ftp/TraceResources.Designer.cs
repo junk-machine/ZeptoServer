@@ -97,6 +97,15 @@ namespace ZeptoServer.Ftp {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Failed to resolved public IP address for the host &quot;{0}&quot;: {1}. Socket address &quot;{2}&quot; will be used as an address of the server..
+        /// </summary>
+        internal static string CouldNotResolvePublicAddressFormat {
+            get {
+                return ResourceManager.GetString("CouldNotResolvePublicAddressFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Client connected.
         /// </summary>
         internal static string PassiveModeConnected {

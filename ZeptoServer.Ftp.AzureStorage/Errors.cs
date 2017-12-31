@@ -4,14 +4,14 @@ using Microsoft.WindowsAzure.Storage.Blob;
 namespace ZeptoServer.Ftp.AzureStorage
 {
     /// <summary>
-    /// Defines all errors thrown by the Auzre Storage file system.
+    /// Defines all errors thrown by the Azure Storage file system.
     /// </summary>
     internal static class Errors
     {
         /// <summary>
         /// Error that is being thrown when unsupported BLOB type is encountered.
         /// </summary>
-        /// <param name="Type">Type of the BLOB</param>
+        /// <param name="blobType">Type of the BLOB</param>
         /// <returns>An exception that should be thrown.</returns>
         public static Exception UnsupportedBlobType(Type blobType)
         {

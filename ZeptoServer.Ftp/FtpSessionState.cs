@@ -19,6 +19,11 @@ namespace ZeptoServer.Ftp
         public IPAddress ServerAddress { get; private set; }
 
         /// <summary>
+        /// Gets the external IP address of the server.
+        /// </summary>
+        public IPAddress PublicServerAddress { get; private set; }
+
+        /// <summary>
         /// Gets the current line termination sequence.
         /// </summary>
         public byte[] LineFeed { get; private set; }
@@ -83,11 +88,15 @@ namespace ZeptoServer.Ftp
         /// with the provided server address, control channel, server options and logger.
         /// </summary>
         /// <param name="serverAddress">Address of the server</param>
+        /// <param name="publicServerAddress">
+        /// External IP address of the server. This address will be used in passive mode
+        /// </param>
         /// <param name="controlChannel">Control channel for the session</param>
         /// <param name="serverOptions">FTP server options</param>
         /// <param name="logger">Current logger instance</param>
         public FtpSessionState(
             IPAddress serverAddress,
+            IPAddress publicServerAddress,
             IControlChannel controlChannel,
             FtpServerOptions serverOptions,
             ILogger logger)
@@ -95,6 +104,11 @@ namespace ZeptoServer.Ftp
             if (serverAddress == null)
             {
                 throw new ArgumentNullException("serverAddress");
+            }
+
+            if (publicServerAddress == null)
+            {
+                throw new ArgumentNullException("publicServerAddress");
             }
 
             if (controlChannel == null)
@@ -113,6 +127,7 @@ namespace ZeptoServer.Ftp
             }
 
             ServerAddress = serverAddress;
+            PublicServerAddress = publicServerAddress;
             ControlChannel = controlChannel;
             LineFeed = serverOptions.CommandEncoding.GetBytes(serverOptions.LineFeed);
             Logger = logger;
