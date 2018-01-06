@@ -37,14 +37,14 @@ namespace ZeptoServer.Ftp.AzureStorage
         /// <param name="containerName">Container name</param>
         public AzureStorageFileSystem(string connectionString, string containerName)
         {
-            if (string.IsNullOrEmpty(connectionString))
+            if (String.IsNullOrEmpty(connectionString))
             {
-                throw new ArgumentNullException("connectionString");
+                throw new ArgumentNullException(nameof(connectionString));
             }
 
-            if (string.IsNullOrEmpty(containerName))
+            if (String.IsNullOrEmpty(containerName))
             {
-                throw new ArgumentNullException("containerName");
+                throw new ArgumentNullException(nameof(containerName));
             }
 
             container =

@@ -29,9 +29,9 @@ namespace ZeptoServer.Ftp.LocalFileSystem
         /// </param>
         public LocalFileSystem(string basePath)
         {
-            if (string.IsNullOrEmpty(basePath))
+            if (String.IsNullOrEmpty(basePath))
             {
-                throw new ArgumentNullException("basePath");
+                throw new ArgumentNullException(nameof(basePath));
             }
 
             this.basePath = basePath;
@@ -130,7 +130,7 @@ namespace ZeptoServer.Ftp.LocalFileSystem
             try
             {
                 return new LocalFileStream(
-                    File.OpenWrite(ToLocalPath(path)));
+                    File.Open(ToLocalPath(path), FileMode.OpenOrCreate, FileAccess.Write, FileShare.Read));
             }
             catch
             {
@@ -165,7 +165,7 @@ namespace ZeptoServer.Ftp.LocalFileSystem
         {
             try
             {
-                return File.OpenRead(ToLocalPath(path));
+                return File.Open(ToLocalPath(path), FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
             }
             catch
             {

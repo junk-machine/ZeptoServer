@@ -1,12 +1,11 @@
 ﻿using System.Reflection;
-using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("ZeptoServer.Ftp.AzureStorage")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyDescription("Azure BLOB Storage file system implementation for ZeptoServer FTP extension")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("ZeptoServer.Ftp.AzureStorage")]

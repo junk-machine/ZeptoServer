@@ -37,7 +37,7 @@ namespace ZeptoServer.Telnet
         {
             if (serverOptions == null)
             {
-                throw new ArgumentNullException("serverOptions");
+                throw new ArgumentNullException(nameof(serverOptions));
             }
 
             argumentCommandSeparator = serverOptions.CommandEncoding.GetBytes(" ");

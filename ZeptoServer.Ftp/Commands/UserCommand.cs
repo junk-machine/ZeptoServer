@@ -28,7 +28,7 @@ namespace ZeptoServer.Ftp.Commands
         {
             if (knownUsers == null)
             {
-                throw new ArgumentNullException("knownUsers");
+                throw new ArgumentNullException(nameof(knownUsers));
             }
 
             this.knownUsers = knownUsers;

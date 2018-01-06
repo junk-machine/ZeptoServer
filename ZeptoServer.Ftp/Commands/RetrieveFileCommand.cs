@@ -37,6 +37,7 @@ namespace ZeptoServer.Ftp.Commands
                     if (fileStream == null)
                     {
                         await session.ControlChannel.Send(FtpResponses.FileUnavailable);
+                        return;
                     }
 
                     if (restartOffset > 0)

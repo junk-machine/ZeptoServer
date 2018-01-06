@@ -103,27 +103,27 @@ namespace ZeptoServer.Ftp
         {
             if (serverAddress == null)
             {
-                throw new ArgumentNullException("serverAddress");
+                throw new ArgumentNullException(nameof(serverAddress));
             }
 
             if (publicServerAddress == null)
             {
-                throw new ArgumentNullException("publicServerAddress");
+                throw new ArgumentNullException(nameof(publicServerAddress));
             }
 
             if (controlChannel == null)
             {
-                throw new ArgumentNullException("controlChannel");
+                throw new ArgumentNullException(nameof(controlChannel));
             }
 
             if (serverOptions == null)
             {
-                throw new ArgumentNullException("serverOptions");
+                throw new ArgumentNullException(nameof(serverOptions));
             }
             
             if (logger == null)
             {
-                throw new ArgumentNullException("logger");
+                throw new ArgumentNullException(nameof(logger));
             }
 
             ServerAddress = serverAddress;

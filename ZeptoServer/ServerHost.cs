@@ -48,17 +48,17 @@ namespace ZeptoServer
         {
             if (endPoint == null)
             {
-                throw new ArgumentNullException("endPoint");
+                throw new ArgumentNullException(nameof(endPoint));
             }
 
             if (serverFactory == null)
             {
-                throw new ArgumentNullException("serverFactory");
+                throw new ArgumentNullException(nameof(serverFactory));
             }
 
             if (logger == null)
             {
-                throw new ArgumentNullException("logger");
+                throw new ArgumentNullException(nameof(logger));
             }
 
             this.serverFactory = serverFactory;

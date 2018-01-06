@@ -37,7 +37,7 @@ namespace ZeptoServer.Log
         {
             if (logger == null)
             {
-                throw new ArgumentNullException("logger");
+                throw new ArgumentNullException(nameof(logger));
             }
 
             this.scopePrefix =

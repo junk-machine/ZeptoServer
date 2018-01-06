@@ -15,7 +15,7 @@ namespace ZeptoServer.Telnet.Responses
         {
             if (data == null)
             {
-                throw new ArgumentNullException("data");
+                throw new ArgumentNullException(nameof(data));
             }
 
             Data = data;

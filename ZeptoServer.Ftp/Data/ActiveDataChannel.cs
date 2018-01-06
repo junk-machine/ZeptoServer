@@ -30,11 +30,11 @@ namespace ZeptoServer.Ftp.Data
         /// <param name="endPoint">End-point to connect to</param>
         /// <param name="logger">Current logger instance</param>
         public ActiveDataChannel(EndPoint endPoint, ILogger logger)
-                : base(logger)
+            : base(logger)
         {
             if (endPoint == null)
             {
-                throw new ArgumentNullException("endPoint");
+                throw new ArgumentNullException(nameof(endPoint));
             }
 
             connectionTask = new TaskCompletionSource<Stream>();

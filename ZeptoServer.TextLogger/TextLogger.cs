@@ -29,7 +29,7 @@ namespace ZeptoServer.TextLogger
         {
             if (sink == null)
             {
-                throw new ArgumentNullException("sink");
+                throw new ArgumentNullException(nameof(sink));
             }
 
             LogLevel = logLevel;

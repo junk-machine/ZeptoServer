@@ -26,7 +26,7 @@ namespace ZeptoServer.Ftp.Commands
         {
             if (features == null)
             {
-                throw new ArgumentNullException("features");
+                throw new ArgumentNullException(nameof(features));
             }
 
             this.features = features;

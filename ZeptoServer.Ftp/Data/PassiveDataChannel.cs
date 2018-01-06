@@ -39,7 +39,7 @@ namespace ZeptoServer.Ftp.Data
         {
             if (endPoint == null)
             {
-                throw new ArgumentNullException("endPoint");
+                throw new ArgumentNullException(nameof(endPoint));
             }
 
             connectionTask = new TaskCompletionSource<Stream>();

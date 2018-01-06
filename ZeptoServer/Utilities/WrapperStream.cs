@@ -69,7 +69,7 @@ namespace ZeptoServer.Utilities
         {
             if (stream == null)
             {
-                throw new ArgumentNullException("stream");
+                throw new ArgumentNullException(nameof(stream));
             }
 
             this.stream = stream;

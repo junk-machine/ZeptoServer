@@ -30,7 +30,7 @@ namespace ZeptoServer.Ftp
         {
             if (serverOptions == null)
             {
-                throw new ArgumentNullException("serverOptions");
+                throw new ArgumentNullException(nameof(serverOptions));
             }
 
             this.serverOptions = serverOptions;

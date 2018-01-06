@@ -35,7 +35,7 @@ namespace ZeptoServer.Ftp
         {
             if (users == null)
             {
-                throw new ArgumentNullException("users");
+                throw new ArgumentNullException(nameof(users));
             }
 
             PublicAddress = publicAddress;

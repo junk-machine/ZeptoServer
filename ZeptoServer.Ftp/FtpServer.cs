@@ -44,12 +44,12 @@ namespace ZeptoServer.Ftp
         {
             if (socket == null)
             {
-                throw new ArgumentNullException("socket");
+                throw new ArgumentNullException(nameof(socket));
             }
 
             if (supportedCommands == null)
             {
-                throw new ArgumentNullException("supportedCommands");
+                throw new ArgumentNullException(nameof(supportedCommands));
             }
 
             this.supportedCommands = supportedCommands;

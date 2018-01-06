@@ -45,17 +45,17 @@ namespace ZeptoServer
         {
             if (socket == null)
             {
-                throw new ArgumentNullException("socket");
+                throw new ArgumentNullException(nameof(socket));
             }
 
             if (serverOptions == null)
             {
-                throw new ArgumentNullException("serverOptions");
+                throw new ArgumentNullException(nameof(serverOptions));
             }
 
             if (logger == null)
             {
-                throw new ArgumentNullException("logger");
+                throw new ArgumentNullException(nameof(logger));
             }
 
             Logger = logger;
