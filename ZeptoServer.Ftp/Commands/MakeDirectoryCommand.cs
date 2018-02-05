@@ -28,7 +28,9 @@ namespace ZeptoServer.Ftp.Commands
 
             if (itemPath.Navigate(arguments) && session.FileSystem.CreateDirectory(itemPath))
             {
-                return FtpResponses.Path(itemPath.ToString(), session.PathEncoding);
+                var itemPathString = itemPath.ToString();
+                session.Logger.WriteInfo(TraceResources.CreatedDirectoryFormat, itemPathString);
+                return FtpResponses.Path(itemPathString, session.PathEncoding);
             }
 
             return FtpResponses.FileUnavailable;

@@ -47,18 +47,18 @@ namespace ZeptoServer.Ftp.Commands
         /// <param name="session">FTP session state</param>
         /// <param name="writer">Delegate that writes the actual data to the data channel</param>
         /// <param name="state">State object to pass to writer delegate</param>
-        /// <returns>A <see cref="Task"/> that represents an asynchronous operation.</returns>
-        protected async Task WriteToDataChannel<TState>(FtpSessionState session, Func<Stream, FtpSessionState, TState, Task<IResponse>> writer, TState state)
+        /// <returns>FTP server response.</returns>
+        protected async Task<IResponse> WriteToDataChannel<TState>(FtpSessionState session, Func<Stream, FtpSessionState, TState, Task<IResponse>> writer, TState state)
         {
             var dataChannel = session.DataChannel;
 
             if (dataChannel == null)
             {
                 await session.ControlChannel.Send(FtpResponses.CanNotOpenDataChannel);
-                return;
+                return FtpResponses.CanNotOpenDataChannel;
             }
 
-            IResponse tranferResult;
+            IResponse transferResult;
 
             try
             {
@@ -66,13 +66,13 @@ namespace ZeptoServer.Ftp.Commands
                 {
                     await session.ControlChannel.Send(FtpResponses.OpenningDataChannel);
 
-                    tranferResult = await writer(dataStream, session, state);
+                    transferResult = await writer(dataStream, session, state);
                 }
             }
             catch (ObjectDisposedException)
             {
                 await session.ControlChannel.Send(FtpResponses.CanNotOpenDataChannel);
-                return;
+                return FtpResponses.CanNotOpenDataChannel;
             }
 
             try
@@ -83,7 +83,8 @@ namespace ZeptoServer.Ftp.Commands
 
             session.DataChannel = null;
 
-            await session.ControlChannel.Send(tranferResult);
+            await session.ControlChannel.Send(transferResult);
+            return transferResult;
         }
     }
 }

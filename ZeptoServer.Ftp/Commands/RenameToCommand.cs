@@ -41,11 +41,17 @@ namespace ZeptoServer.Ftp.Commands
 
             if (targetPath.Navigate(arguments))
             {
-                if ((session.FileSystem.IsFileExist(sourcePath)
+                if (session.FileSystem.IsFileExist(sourcePath)
                         && session.FileSystem.RenameFile(sourcePath, targetPath))
-                    || (session.FileSystem.IsDirectoryExist(sourcePath)
-                        && session.FileSystem.RenameDirectory(sourcePath, targetPath)))
                 {
+                    session.Logger.WriteInfo(TraceResources.RenamedFileFormat, sourcePath, targetPath);
+                    return FtpResponses.FileActionOk;
+                }
+
+                if (session.FileSystem.IsDirectoryExist(sourcePath)
+                        && session.FileSystem.RenameDirectory(sourcePath, targetPath))
+                {
+                    session.Logger.WriteInfo(TraceResources.RenamedDirectoryFormat, sourcePath, targetPath);
                     return FtpResponses.FileActionOk;
                 }
             }

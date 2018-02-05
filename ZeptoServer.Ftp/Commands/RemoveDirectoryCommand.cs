@@ -28,6 +28,7 @@ namespace ZeptoServer.Ftp.Commands
 
             if (itemPath.Navigate(arguments) && session.FileSystem.RemoveDirectory(itemPath))
             {
+                session.Logger.WriteInfo(TraceResources.DeletedDirectoryFormat, itemPath);
                 return FtpResponses.FileActionOk;
             }
 

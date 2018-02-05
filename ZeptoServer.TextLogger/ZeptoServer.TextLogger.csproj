@@ -38,6 +38,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Sinks\ConsoleLoggerSink.cs" />
+    <Compile Include="Sinks\FileLoggerSink.cs" />
     <Compile Include="TextLogger.cs" />
     <Compile Include="ITextLoggerSink.cs" />
     <Compile Include="LoggerResources.Designer.cs">

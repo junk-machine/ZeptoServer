@@ -61,20 +61,20 @@ namespace ZeptoServer.Ftp {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Connected to client.
+        ///   Looks up a localized string similar to Connected to client at {0}.
         /// </summary>
-        internal static string ActiveModeConnected {
+        internal static string ActiveModeConnectedFormat {
             get {
-                return ResourceManager.GetString("ActiveModeConnected", resourceCulture);
+                return ResourceManager.GetString("ActiveModeConnectedFormat", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Connecting to client....
+        ///   Looks up a localized string similar to Connecting to client at {0}....
         /// </summary>
-        internal static string ActiveModeConnecting {
+        internal static string ActiveModeConnectingFormat {
             get {
-                return ResourceManager.GetString("ActiveModeConnecting", resourceCulture);
+                return ResourceManager.GetString("ActiveModeConnectingFormat", resourceCulture);
             }
         }
         
@@ -106,11 +106,56 @@ namespace ZeptoServer.Ftp {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Client connected.
+        ///   Looks up a localized string similar to Created directory &quot;{0}&quot;.
         /// </summary>
-        internal static string PassiveModeConnected {
+        internal static string CreatedDirectoryFormat {
             get {
-                return ResourceManager.GetString("PassiveModeConnected", resourceCulture);
+                return ResourceManager.GetString("CreatedDirectoryFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Deleted directory &quot;{0}&quot;.
+        /// </summary>
+        internal static string DeletedDirectoryFormat {
+            get {
+                return ResourceManager.GetString("DeletedDirectoryFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Deleted file &quot;{0}&quot;.
+        /// </summary>
+        internal static string DeletedFileFormat {
+            get {
+                return ResourceManager.GetString("DeletedFileFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Stored file &quot;{0}&quot;.
+        /// </summary>
+        internal static string FileStoredFormat {
+            get {
+                return ResourceManager.GetString("FileStoredFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Invalid login attempt for user &quot;{0}&quot; with password &quot;{1}&quot;.
+        /// </summary>
+        internal static string InvalidLoginAttemptFormat {
+            get {
+                return ResourceManager.GetString("InvalidLoginAttemptFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Client connected from {0}.
+        /// </summary>
+        internal static string PassiveModeConnectedFormat {
+            get {
+                return ResourceManager.GetString("PassiveModeConnectedFormat", resourceCulture);
             }
         }
         
@@ -129,6 +174,42 @@ namespace ZeptoServer.Ftp {
         internal static string PassiveModeLoggerScope {
             get {
                 return ResourceManager.GetString("PassiveModeLoggerScope", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Renamed directory &quot;{0}&quot; to &quot;{1}&quot;.
+        /// </summary>
+        internal static string RenamedDirectoryFormat {
+            get {
+                return ResourceManager.GetString("RenamedDirectoryFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Renamed file &quot;{0}&quot; to &quot;{1}&quot;.
+        /// </summary>
+        internal static string RenamedFileFormat {
+            get {
+                return ResourceManager.GetString("RenamedFileFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Retrieved file &quot;{0}&quot;.
+        /// </summary>
+        internal static string RetrievedFileFormat {
+            get {
+                return ResourceManager.GetString("RetrievedFileFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to User &quot;{0}&quot; logged in.
+        /// </summary>
+        internal static string UserLoggedInFormat {
+            get {
+                return ResourceManager.GetString("UserLoggedInFormat", resourceCulture);
             }
         }
     }

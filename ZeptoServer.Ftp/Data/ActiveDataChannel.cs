@@ -47,7 +47,7 @@ namespace ZeptoServer.Ftp.Data
 
             // Connect right now, as there are some clients that do not send
             // additional commands before connection is established
-            Logger.WriteVerbose(TraceResources.ActiveModeConnecting);
+            Logger.WriteVerbose(TraceResources.ActiveModeConnectingFormat, endPoint);
             
             clientSocket.BeginConnect(endPoint, EndConnect, clientSocket);
         }
@@ -79,7 +79,7 @@ namespace ZeptoServer.Ftp.Data
                 return;
             }
 
-            Logger.WriteInfo(TraceResources.ActiveModeConnected);
+            Logger.WriteInfo(TraceResources.ActiveModeConnectedFormat, socket.RemoteEndPoint);
 
             Stream stream = new NetworkStream(socket, true);
 

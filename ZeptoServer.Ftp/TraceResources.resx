@@ -117,11 +117,13 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="ActiveModeConnected" xml:space="preserve">
-    <value>Connected to client</value>
+  <data name="ActiveModeConnectedFormat" xml:space="preserve">
+    <value>Connected to client at {0}</value>
+    <comment>0 is client endpoint</comment>
   </data>
-  <data name="ActiveModeConnecting" xml:space="preserve">
-    <value>Connecting to client...</value>
+  <data name="ActiveModeConnectingFormat" xml:space="preserve">
+    <value>Connecting to client at {0}...</value>
+    <comment>0 is client endpoint</comment>
   </data>
   <data name="ActiveModeLoggerScope" xml:space="preserve">
     <value>ACTV</value>
@@ -133,13 +135,50 @@
     <value>Failed to resolved public IP address for the host "{0}": {1}. Socket address "{2}" will be used as an address of the server.</value>
     <comment>0 is host; 1 is error message; 2 is IP address</comment>
   </data>
-  <data name="PassiveModeConnected" xml:space="preserve">
-    <value>Client connected</value>
+  <data name="CreatedDirectoryFormat" xml:space="preserve">
+    <value>Created directory "{0}"</value>
+    <comment>0 is directory name</comment>
+  </data>
+  <data name="DeletedDirectoryFormat" xml:space="preserve">
+    <value>Deleted directory "{0}"</value>
+    <comment>0 is directory name</comment>
+  </data>
+  <data name="DeletedFileFormat" xml:space="preserve">
+    <value>Deleted file "{0}"</value>
+    <comment>0 is file name</comment>
+  </data>
+  <data name="FileStoredFormat" xml:space="preserve">
+    <value>Stored file "{0}"</value>
+    <comment>0 is file name</comment>
+  </data>
+  <data name="InvalidLoginAttemptFormat" xml:space="preserve">
+    <value>Invalid login attempt for user "{0}" with password "{1}"</value>
+    <comment>0 is user name; 1 is password</comment>
+  </data>
+  <data name="PassiveModeConnectedFormat" xml:space="preserve">
+    <value>Client connected from {0}</value>
+    <comment>0 is client endpoint</comment>
   </data>
   <data name="PassiveModeConnecting" xml:space="preserve">
     <value>Accepting new connections</value>
   </data>
   <data name="PassiveModeLoggerScope" xml:space="preserve">
     <value>PASV</value>
+  </data>
+  <data name="RenamedDirectoryFormat" xml:space="preserve">
+    <value>Renamed directory "{0}" to "{1}"</value>
+    <comment>0 is original directory name; 1 is new directory name</comment>
+  </data>
+  <data name="RenamedFileFormat" xml:space="preserve">
+    <value>Renamed file "{0}" to "{1}"</value>
+    <comment>0 is original file name; 1 is new file name</comment>
+  </data>
+  <data name="RetrievedFileFormat" xml:space="preserve">
+    <value>Retrieved file "{0}"</value>
+    <comment>0 is file name</comment>
+  </data>
+  <data name="UserLoggedInFormat" xml:space="preserve">
+    <value>User "{0}" logged in</value>
+    <comment>0 is user name</comment>
   </data>
 </root>

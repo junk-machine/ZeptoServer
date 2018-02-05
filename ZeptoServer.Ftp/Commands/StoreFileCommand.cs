@@ -55,7 +55,11 @@ namespace ZeptoServer.Ftp.Commands
                         }
                     }
 
-                    await WriteToDataChannel(session, ReceiveFile, fileStream);
+                    if (await WriteToDataChannel(session, ReceiveFile, fileStream) ==
+                            FtpResponses.TransferComplete)
+                    {
+                        session.Logger.WriteInfo(TraceResources.FileStoredFormat, filePath);
+                    }
                 }
             }
             else

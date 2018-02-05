@@ -51,11 +51,18 @@ namespace ZeptoServer.Ftp.Commands
 
             if (user == null)
             {
+                session.Logger.WriteWarning(
+                    TraceResources.InvalidLoginAttemptFormat,
+                    session.Username,
+                    arguments);
+
                 return FtpResponses.NotLoggedIn;
             }
 
             session.FileSystem = user.FileSystem;
             session.CurrentDirectory = new VirtualPath();
+
+            session.Logger.WriteInfo(TraceResources.UserLoggedInFormat, session.Username);
 
             return FtpResponses.LoggedIn;
         }

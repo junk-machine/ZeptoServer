@@ -90,7 +90,7 @@ namespace ZeptoServer.Ftp.Data
                 return;
             }
 
-            Logger.WriteInfo(TraceResources.PassiveModeConnected);
+            Logger.WriteInfo(TraceResources.PassiveModeConnectedFormat, clientSocket.RemoteEndPoint);
 
             Stream stream = new NetworkStream(clientSocket, true);
 
