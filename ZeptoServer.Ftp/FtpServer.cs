@@ -131,7 +131,7 @@ namespace ZeptoServer.Ftp
                         TraceResources.CouldNotResolvePublicAddressFormat,
                         serverOptions.PublicAddress,
                         error.Message,
-                        publicIpAddress);
+                        publicIpAddress = localIpAddress);
                 }
             }
 
