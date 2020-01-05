@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Threading;
+using System.Threading.Tasks;
 using ZeptoServer.Telnet.Responses;
 using ZeptoServer.Utilities;
 
@@ -14,12 +15,13 @@ namespace ZeptoServer.Ftp.Commands
         /// </summary>
         /// <param name="arguments">Command arguments</param>
         /// <param name="session">FTP session context</param>
+        /// <param name="cancellation">Cancellation token</param>
         /// <returns>A <see cref="Task"/> that represents an asynchronous operation.</returns>
-        public virtual async Task Handle(IArrayBufferView arguments, FtpSessionState session)
+        public virtual async Task Handle(IArrayBufferView arguments, FtpSessionState session, CancellationToken cancellation)
         {
             CleanupRenameSource(session);
             CleanupTransferRestartOffset(session);
-            await HandleCommand(ReadArguments(arguments, session), session);
+            await HandleCommand(ReadArguments(arguments, session), session, cancellation);
         }
 
         /// <summary>
@@ -38,10 +40,13 @@ namespace ZeptoServer.Ftp.Commands
         /// </summary>
         /// <param name="arguments">Command arguments</param>
         /// <param name="session">FTP session context</param>
+        /// <param name="cancellation">Cancellation token</param>
         /// <returns>A <see cref="Task"/> that represents an asynchronous operation.</returns>
-        protected virtual async Task HandleCommand(string arguments, FtpSessionState session)
+        protected virtual async Task HandleCommand(string arguments, FtpSessionState session, CancellationToken cancellation)
         {
-            await session.ControlChannel.Send(Handle(arguments, session));
+            await session.ControlChannel.Send(
+                await Handle(arguments, session, cancellation),
+                cancellation);
         }
 
         /// <summary>
@@ -49,8 +54,9 @@ namespace ZeptoServer.Ftp.Commands
         /// </summary>
         /// <param name="arguments">Command arguments</param>
         /// <param name="session">FTP session context</param>
-        /// <returns>FTP server response to send to the client.</returns>
-        protected abstract IResponse Handle(string arguments, FtpSessionState session);
+        /// <param name="cancellation">Cancellation token</param>
+        /// <returns>A <see cref="Task{IResponse}"/> that preparaes FTP server response to send to the client.</returns>
+        protected abstract Task<IResponse> Handle(string arguments, FtpSessionState session, CancellationToken cancellation);
 
         /// <summary>
         /// Empties the name of the item to be renamed with the next rename command.

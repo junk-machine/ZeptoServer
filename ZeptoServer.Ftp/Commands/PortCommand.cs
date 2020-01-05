@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Net;
+using System.Threading;
+using System.Threading.Tasks;
 using ZeptoServer.Ftp.Data;
 using ZeptoServer.Log;
 using ZeptoServer.Telnet.Responses;
@@ -19,12 +21,13 @@ namespace ZeptoServer.Ftp.Commands
         /// </summary>
         /// <param name="arguments">Command arguments</param>
         /// <param name="session">FTP session context</param>
+        /// <param name="cancellation">Cancellation token</param>
         /// <returns>FTP server response to send to the client.</returns>
-        protected override IResponse Handle(string arguments, FtpSessionState session)
+        protected override Task<IResponse> Handle(string arguments, FtpSessionState session, CancellationToken cancellation)
         {
             if (String.IsNullOrEmpty(arguments))
             {
-                return FtpResponses.ParameterSyntaxError;
+                return FtpResponsesAsync.ParameterSyntaxError;
             }
 
             var segments = arguments.Split(',');
@@ -32,7 +35,7 @@ namespace ZeptoServer.Ftp.Commands
             EndPoint endPoint;
             if (!TryGetEndPoint(segments, out endPoint))
             {
-                return FtpResponses.ParameterSyntaxError;
+                return FtpResponsesAsync.ParameterSyntaxError;
             }
 
             session.DataChannel =
@@ -40,7 +43,7 @@ namespace ZeptoServer.Ftp.Commands
                     endPoint,
                     new LoggerScope(TraceResources.ActiveModeLoggerScope, session.Logger));
 
-            return FtpResponses.Success;
+            return FtpResponsesAsync.Success;
         }
 
         /// <summary>

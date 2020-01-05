@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
+using System.Threading;
 using System.Threading.Tasks;
 using ZeptoServer.Ftp.Commands;
 using ZeptoServer.Log;
@@ -68,10 +69,11 @@ namespace ZeptoServer.Ftp
         /// <summary>
         /// Sends the response indicating that server is ready to accept commands.
         /// </summary>
+        /// <param name="cancellation">Cancellation token</param>
         /// <returns>A <see cref="Task"/> that represents an asynchronous operation.</returns>
-        protected override async Task OnStart()
+        protected override async Task OnStart(CancellationToken cancellation)
         {
-            await Send(FtpResponses.ServiceReady);
+            await Send(FtpResponses.ServiceReady, cancellation);
         }
 
         /// <summary>
@@ -79,8 +81,9 @@ namespace ZeptoServer.Ftp
         /// </summary>
         /// <param name="command">Command name</param>
         /// <param name="arguments">Command arguments</param>
+        /// <param name="cancellation">Cancellation token</param>
         /// <returns>A <see cref="Task"/> that represents an asynchronous operation.</returns>
-        protected override async Task OnCommand(string command, IArrayBufferView arguments)
+        protected override async Task OnCommand(string command, IArrayBufferView arguments, CancellationToken cancellation)
         {
             IFtpCommand commandHandler;
 
@@ -88,18 +91,18 @@ namespace ZeptoServer.Ftp
             {
                 try
                 {
-                    await commandHandler.Handle(arguments, session);
+                    await commandHandler.Handle(arguments, session, cancellation);
                 }
                 catch (Exception error)
                 {
                     session.Logger.WriteError(error.Message);
-                    await Send(FtpResponses.InternalError);
+                    await Send(FtpResponses.InternalError, cancellation);
                 }
             }
             else
             {
                 session.Logger.WriteWarning(TraceResources.CommandNotSupported);
-                await Send(FtpResponses.NotImplemented);
+                await Send(FtpResponses.NotImplemented, cancellation);
             }
         }
 

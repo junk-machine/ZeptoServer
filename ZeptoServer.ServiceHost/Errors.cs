@@ -18,14 +18,5 @@ namespace ZeptoServer.ServiceHost
             return new ConfigurationErrorsException(
                 String.Format(Resources.MissingConfigurationSectionFormat, sectionName));
         }
-
-        /// <summary>
-        /// Error that is being thrown when root configuration node is not a ServerHost.
-        /// </summary>
-        /// <returns>An exception that should be thrown.</returns>
-        public static Exception RootIsNotServerHost()
-        {
-            return new ConfigurationErrorsException(Resources.RootIsNotServerHost);
-        }
     }
 }

@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Threading;
+using System.Threading.Tasks;
 using ZeptoServer.Telnet.Responses;
 
 namespace ZeptoServer.Telnet
@@ -12,7 +13,8 @@ namespace ZeptoServer.Telnet
         /// Sends the response back to the client.
         /// </summary>
         /// <param name="response">Server response</param>
+        /// <param name="cancellation">Cancellation token</param>
         /// <returns>A <see cref="Task"/> that represents an asynchronous operation.</returns>
-        Task Send(IResponse response);
+        Task Send(IResponse response, CancellationToken cancellation);
     }
 }

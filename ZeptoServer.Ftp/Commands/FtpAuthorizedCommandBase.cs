@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Threading;
+using System.Threading.Tasks;
 using ZeptoServer.Utilities;
 
 namespace ZeptoServer.Ftp.Commands
@@ -13,16 +14,17 @@ namespace ZeptoServer.Ftp.Commands
         /// </summary>
         /// <param name="arguments">Command arguments</param>
         /// <param name="session">FTP session context</param>
+        /// <param name="cancellation">Cancellation token</param>
         /// <returns>A <see cref="Task"/> that represents an asynchronous operation.</returns>
-        public override async Task Handle(IArrayBufferView arguments, FtpSessionState session)
+        public override async Task Handle(IArrayBufferView arguments, FtpSessionState session, CancellationToken cancellation)
         {
             if (session.FileSystem == null)
             {
-                await session.ControlChannel.Send(FtpResponses.NotLoggedIn);
+                await session.ControlChannel.Send(FtpResponses.NotLoggedIn, cancellation);
                 return;
             }
 
-            await base.Handle(arguments, session);
+            await base.Handle(arguments, session, cancellation);
         }
     }
 }

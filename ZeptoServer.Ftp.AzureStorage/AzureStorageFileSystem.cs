@@ -1,11 +1,12 @@
 ﻿using System;
-using System.Linq;
 using System.Collections.Generic;
 using System.IO;
-using Microsoft.WindowsAzure.Storage;
-using Microsoft.WindowsAzure.Storage.Blob;
-using ZeptoServer.Ftp.FileSystems;
+using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
+using Microsoft.Azure.Storage;
+using Microsoft.Azure.Storage.Blob;
+using ZeptoServer.Ftp.FileSystems;
 
 namespace ZeptoServer.Ftp.AzureStorage
 {
@@ -67,11 +68,12 @@ namespace ZeptoServer.Ftp.AzureStorage
         /// Retrieves the information about the item.
         /// </summary>
         /// <param name="path">Path to the item</param>
+        /// <param name="cancellation">Cancellation token</param>
         /// <returns>Information about the stored item or null, if item does not exist.</returns>
-        public FileSystemItem GetItem(VirtualPath path)
+        public async Task<FileSystemItem> GetItem(VirtualPath path, CancellationToken cancellation)
         {
             var cloudBlob =
-                container.GetBlobReferenceFromServer(ToBlobName(path, false));
+                await container.GetBlobReferenceFromServerAsync(ToBlobName(path, false), cancellation);
 
             if (cloudBlob.Exists())
             {
@@ -83,7 +85,7 @@ namespace ZeptoServer.Ftp.AzureStorage
             }
 
             cloudBlob =
-                container.GetBlobReferenceFromServer(ToBlobName(path, true));
+                await container.GetBlobReferenceFromServerAsync(ToBlobName(path, true), cancellation);
 
             if (cloudBlob.Exists())
             {
@@ -100,24 +102,28 @@ namespace ZeptoServer.Ftp.AzureStorage
         /// Retrieves the information about all items in the directory.
         /// </summary>
         /// <param name="path">Path to the directory</param>
+        /// <param name="cancellation">Cancellation token</param>
         /// <returns>Information about the stored items or null, if directory does not exist.</returns>
-        public IEnumerable<FileSystemItem> ListItems(VirtualPath path)
+        public Task<IEnumerable<FileSystemItem>> ListItems(VirtualPath path, CancellationToken cancellation)
         {
-            return ToFileSystemItems(
-                container.ListBlobs(ToBlobName(path, true)));
+            // TODO: To make this properly async we need to return IAsyncEnumerable
+            return Task.FromResult(
+                ToFileSystemItems(
+                    container.ListBlobs(ToBlobName(path, true))));
         }
 
         /// <summary>
         /// Checks if the BLOB exists in the Azure Storage.
         /// </summary>
         /// <param name="path">Path to the file</param>
+        /// <param name="cancellation">Cancellation token</param>
         /// <returns>true if file exists, otherwise false.</returns>
-        public bool IsFileExist(VirtualPath path)
+        public async Task<bool> IsFileExist(VirtualPath path, CancellationToken cancellation)
         {
             return
-                container
+                await container
                     .GetBlobReference(ToBlobName(path, false))
-                    .Exists();
+                    .ExistsAsync(cancellation);
         }
 
         /// <summary>
@@ -125,14 +131,16 @@ namespace ZeptoServer.Ftp.AzureStorage
         /// </summary>
         /// <param name="source">Name of the file to rename</param>
         /// <param name="target">New name for the file</param>
+        /// <param name="cancellation">Cancellation token</param>
         /// <returns>true if rename operation succeeded, otherwise false.</returns>
-        public bool RenameFile(VirtualPath source, VirtualPath target)
+        public async Task<bool> RenameFile(VirtualPath source, VirtualPath target, CancellationToken cancellation)
         {
             try
             {
-                RenameBlob(
+                await RenameBlob(
                     container.GetBlobReference(ToBlobName(source, false)),
-                    container.GetBlobReference(ToBlobName(target, false)));
+                    container.GetBlobReference(ToBlobName(target, false)),
+                    cancellation);
 
                 return true;
             }
@@ -146,15 +154,16 @@ namespace ZeptoServer.Ftp.AzureStorage
         /// Open the BLOB for write.
         /// </summary>
         /// <param name="path">Path to the file</param>
+        /// <param name="cancellation">Cancellation token</param>
         /// <returns>Stream that allows to write data to the BLOB or null, if BLOB could not be opened.</returns>
-        public Stream WriteFile(VirtualPath path)
+        public async Task<Stream> WriteFile(VirtualPath path, CancellationToken cancellation)
         {
             try
             {
                 return
-                    container
+                    await container
                         .GetAppendBlobReference(ToBlobName(path, false))
-                        .OpenWrite(true);
+                        .OpenWriteAsync(true, cancellation);
             }
             catch
             {
@@ -166,15 +175,16 @@ namespace ZeptoServer.Ftp.AzureStorage
         /// Open the BLOB to append the data.
         /// </summary>
         /// <param name="path">Path to the file</param>
+        /// <param name="cancellation">Cancellation token</param>
         /// <returns>Stream that allows to write data to the BLOB or null, if BLOB could not be opened.</returns>
-        public Stream AppendFile(VirtualPath path)
+        public async Task<Stream> AppendFile(VirtualPath path, CancellationToken cancellation)
         {
             try
             {
                 return
-                    container
+                    await container
                         .GetAppendBlobReference(ToBlobName(path, false))
-                        .OpenWrite(false);
+                        .OpenWriteAsync(false, cancellation);
             }
             catch
             {
@@ -186,15 +196,16 @@ namespace ZeptoServer.Ftp.AzureStorage
         /// Opens the BLOB for read.
         /// </summary>
         /// <param name="path">Path to the file</param>
+        /// <param name="cancellation">Cancellation token</param>
         /// <returns>Stream that allows to read data from the BLOB or null, if BLOB could not be opened.</returns>
-        public Stream ReadFile(VirtualPath path)
+        public async Task<Stream> ReadFile(VirtualPath path, CancellationToken cancellation)
         {
             try
             {
                 return
-                    container
+                    await container
                         .GetBlobReference(ToBlobName(path, false))
-                        .OpenRead();
+                        .OpenReadAsync();
             }
             catch
             {
@@ -206,14 +217,15 @@ namespace ZeptoServer.Ftp.AzureStorage
         /// Removes the BLOB from the Azure Storage.
         /// </summary>
         /// <param name="path">Path to the file</param>
+        /// <param name="cancellation">Cancellation token</param>
         /// <returns>true if BLOB was removed, otherwise false.</returns>
-        public bool RemoveFile(VirtualPath path)
+        public async Task<bool> RemoveFile(VirtualPath path, CancellationToken cancellation)
         {
             try
             {
-                container
+                await container
                     .GetBlobReference(ToBlobName(path, false))
-                    .Delete();
+                    .DeleteAsync(cancellation);
 
                 return true;
             }
@@ -227,27 +239,29 @@ namespace ZeptoServer.Ftp.AzureStorage
         /// Checks if the directory exists in the Azure Storage.
         /// </summary>
         /// <param name="path">Path to the directory</param>
+        /// <param name="cancellation">Cancellation token</param>
         /// <returns>true if directory exists, otherwise false.</returns>
-        public bool IsDirectoryExist(VirtualPath path)
+        public Task<bool> IsDirectoryExist(VirtualPath path, CancellationToken cancellation)
         {
-            // Since Azure Storage does not support directories - there is nothing to check.
+            // Since Azure BLOB Storage does not support directories - there is nothing to check.
             // Once there are BLOBs with path segments in the name - directories will show up
             // in ListBlobs.
-            return true;
+            return CommonTasks.True;
         }
 
         /// <summary>
         /// Creates new directory in the Azure Storage.
         /// </summary>
         /// <param name="path">Name of the new directory</param>
+        /// <param name="cancellation">Cancellation token</param>
         /// <returns>true if directory was successfully created, otherwise false.</returns>
-        public bool CreateDirectory(VirtualPath path)
+        public async Task<bool> CreateDirectory(VirtualPath path, CancellationToken cancellation)
         {
             try
             {
-                container
+                await container
                     .GetBlockBlobReference(ToBlobName(path, true))
-                    .UploadText(string.Empty);
+                    .UploadTextAsync(string.Empty, cancellation);
 
                 return true;
             }
@@ -262,8 +276,9 @@ namespace ZeptoServer.Ftp.AzureStorage
         /// </summary>
         /// <param name="source">Name of the directory to rename</param>
         /// <param name="target">New name for the directory</param>
+        /// <param name="cancellation">Cancellation token</param>
         /// <returns>true if rename operation succeeded, otherwise false.</returns>
-        public bool RenameDirectory(VirtualPath source, VirtualPath target)
+        public async Task<bool> RenameDirectory(VirtualPath source, VirtualPath target, CancellationToken cancellation)
         {
             try
             {
@@ -281,11 +296,12 @@ namespace ZeptoServer.Ftp.AzureStorage
                     }
 
                     var newBlobName =
-                        cloudBlob.Name.Replace(sourceBlobName, targetBlobName);
+                        targetBlobName + cloudBlob.Name.Substring(sourceBlobName.Length);
 
-                    RenameBlob(
+                    await RenameBlob(
                         (CloudBlob)blob,
-                        container.GetBlobReference(newBlobName));
+                        container.GetBlobReference(newBlobName),
+                        cancellation);
                 }
 
                 return true;
@@ -300,8 +316,9 @@ namespace ZeptoServer.Ftp.AzureStorage
         /// Removes the directory from the Azure Storage.
         /// </summary>
         /// <param name="path">Path to the directory</param>
+        /// <param name="cancellation">Cancellation token</param>
         /// <returns>true if directory was removed, otherwise false.</returns>
-        public bool RemoveDirectory(VirtualPath path)
+        public async Task<bool> RemoveDirectory(VirtualPath path, CancellationToken cancellation)
         {
             try
             {
@@ -316,7 +333,7 @@ namespace ZeptoServer.Ftp.AzureStorage
 
                 if (folderBlob != null)
                 {
-                    folderBlob.Delete();
+                    await folderBlob.DeleteAsync(cancellation);
                 }
 
                 return true;
@@ -381,13 +398,15 @@ namespace ZeptoServer.Ftp.AzureStorage
         /// </summary>
         /// <param name="sourceBlob">Source Cloud BLOB</param>
         /// <param name="targetBlob">Target Cloud BLOB</param>
-        private void RenameBlob(CloudBlob sourceBlob, CloudBlob targetBlob)
+        /// <param name="cancellation">Cancellation token</param>
+        /// <returns>A <see cref="Task"/> that represents asynchronous copy operation.</returns>
+        private async Task RenameBlob(CloudBlob sourceBlob, CloudBlob targetBlob, CancellationToken cancellation)
         {
-            targetBlob.StartCopy(sourceBlob.Uri);
+            await targetBlob.StartCopyAsync(sourceBlob.Uri, cancellation);
 
             while (targetBlob.CopyState.Status == CopyStatus.Pending)
             {
-                Thread.Sleep(250);
+                await Task.Delay(250);
             }
 
             if (targetBlob.CopyState.Status != CopyStatus.Success)
@@ -395,7 +414,7 @@ namespace ZeptoServer.Ftp.AzureStorage
                 throw Errors.BlobCopyFailed(targetBlob.CopyState.Status, targetBlob.CopyState.StatusDescription);
             }
 
-            sourceBlob.Delete();
+            await sourceBlob.DeleteAsync(cancellation);
         }
 
         /// <summary>

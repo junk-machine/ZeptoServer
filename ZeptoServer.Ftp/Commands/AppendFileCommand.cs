@@ -1,4 +1,6 @@
 ﻿using System.IO;
+using System.Threading;
+using System.Threading.Tasks;
 using ZeptoServer.Ftp.FileSystems;
 
 namespace ZeptoServer.Ftp.Commands
@@ -16,10 +18,11 @@ namespace ZeptoServer.Ftp.Commands
         /// </summary>
         /// <param name="fileSystem">File system instance</param>
         /// <param name="path">Virtual path to the file</param>
+        /// <param name="cancellation">Cancellation token</param>
         /// <returns>File stream to write the data</returns>
-        protected override Stream OpenFile(IFileSystem fileSystem, VirtualPath path)
+        protected override Task<Stream> OpenFile(IFileSystem fileSystem, VirtualPath path, CancellationToken cancellation)
         {
-            return fileSystem.AppendFile(path);
+            return fileSystem.AppendFile(path, cancellation);
         }
     }
 }

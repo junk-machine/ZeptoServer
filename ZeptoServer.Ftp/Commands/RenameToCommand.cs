@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Threading;
+using System.Threading.Tasks;
 using ZeptoServer.Telnet.Responses;
 
 namespace ZeptoServer.Ftp.Commands
@@ -25,8 +27,9 @@ namespace ZeptoServer.Ftp.Commands
         /// </summary>
         /// <param name="arguments">Command arguments</param>
         /// <param name="session">FTP session context</param>
+        /// <param name="cancellation">Cancellation token</param>
         /// <returns>FTP server response to send to the client.</returns>
-        protected override IResponse Handle(string arguments, FtpSessionState session)
+        protected override async Task<IResponse> Handle(string arguments, FtpSessionState session, CancellationToken cancellation)
         {
             var sourcePath = session.RenameSource;
 
@@ -41,15 +44,15 @@ namespace ZeptoServer.Ftp.Commands
 
             if (targetPath.Navigate(arguments))
             {
-                if (session.FileSystem.IsFileExist(sourcePath)
-                        && session.FileSystem.RenameFile(sourcePath, targetPath))
+                if (await session.FileSystem.IsFileExist(sourcePath, cancellation)
+                        && await session.FileSystem.RenameFile(sourcePath, targetPath, cancellation))
                 {
                     session.Logger.WriteInfo(TraceResources.RenamedFileFormat, sourcePath, targetPath);
                     return FtpResponses.FileActionOk;
                 }
 
-                if (session.FileSystem.IsDirectoryExist(sourcePath)
-                        && session.FileSystem.RenameDirectory(sourcePath, targetPath))
+                if (await session.FileSystem.IsDirectoryExist(sourcePath, cancellation)
+                        && await session.FileSystem.RenameDirectory(sourcePath, targetPath, cancellation))
                 {
                     session.Logger.WriteInfo(TraceResources.RenamedDirectoryFormat, sourcePath, targetPath);
                     return FtpResponses.FileActionOk;

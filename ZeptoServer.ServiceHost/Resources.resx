@@ -126,7 +126,4 @@
   <data name="MissingConfigurationSectionFormat" xml:space="preserve">
     <value>Required configuration section '{0}' is missing</value>
   </data>
-  <data name="RootIsNotServerHost" xml:space="preserve">
-    <value>Root configuration node should be a ServerHost</value>
-  </data>
 </root>

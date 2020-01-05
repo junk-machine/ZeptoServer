@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Threading;
+using System.Threading.Tasks;
 using ZeptoServer.Telnet.Responses;
 
 namespace ZeptoServer.Ftp.Commands
@@ -21,20 +23,21 @@ namespace ZeptoServer.Ftp.Commands
         /// </summary>
         /// <param name="arguments">Command arguments</param>
         /// <param name="session">FTP session context</param>
+        /// <param name="cancellation">Cancellation token</param>
         /// <returns>FTP server response to send to the client.</returns>
-        protected override IResponse Handle(string arguments, FtpSessionState session)
+        protected override Task<IResponse> Handle(string arguments, FtpSessionState session, CancellationToken cancellation)
         {
             if (String.IsNullOrEmpty(arguments))
             {
-                return FtpResponses.ParameterSyntaxError;
+                return FtpResponsesAsync.ParameterSyntaxError;
             }
 
             if (FileStructure.Equals(arguments, StringComparison.OrdinalIgnoreCase))
             {
-                return FtpResponses.Success;
+                return FtpResponsesAsync.Success;
             }
 
-            return FtpResponses.NotImplementedForParameter;
+            return FtpResponsesAsync.NotImplementedForParameter;
         }
     }
 }

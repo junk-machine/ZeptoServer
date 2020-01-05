@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using ZeptoServer.Ftp.FileSystems;
 using ZeptoServer.Telnet.Responses;
@@ -53,13 +54,13 @@ namespace ZeptoServer.Ftp.Commands
         /// <param name="arguments">Command arguments</param>
         /// <param name="session">FTP session context</param>
         /// <returns>A <see cref="Task"/> that represents an asynchronous operation.</returns>
-        protected override async Task HandleDataCommand(string arguments, FtpSessionState session)
+        protected override async Task HandleDataCommand(string arguments, FtpSessionState session, CancellationToken cancellation)
         {
             IEnumerable<FileSystemItem> items = null;
 
             if (String.IsNullOrEmpty(arguments) || ListAll.Equals(arguments, StringComparison.OrdinalIgnoreCase))
             {
-                items = session.FileSystem.ListItems(session.CurrentDirectory);
+                items = await session.FileSystem.ListItems(session.CurrentDirectory, cancellation);
             }
             else
             {
@@ -67,7 +68,7 @@ namespace ZeptoServer.Ftp.Commands
 
                 if (itemPath.Navigate(arguments))
                 {
-                    var item = session.FileSystem.GetItem(itemPath);
+                    var item = await session.FileSystem.GetItem(itemPath, cancellation);
 
                     if (item != null)
                     {
@@ -78,11 +79,11 @@ namespace ZeptoServer.Ftp.Commands
 
             if (items == null)
             {
-                await session.ControlChannel.Send(FtpResponses.FileUnavailable);
+                await session.ControlChannel.Send(FtpResponses.FileUnavailable, cancellation);
                 return;
             }
 
-            await WriteToDataChannel(session, WriteFileList, items);
+            await WriteToDataChannel(session, WriteFileList, items, cancellation);
         }
 
         /// <summary>
@@ -91,8 +92,13 @@ namespace ZeptoServer.Ftp.Commands
         /// <param name="dataStream">Data channel stream</param>
         /// <param name="session">FTP session context</param>
         /// <param name="items">File system items</param>
+        /// <param name="cancellation">Cancellation token</param>
         /// <returns>Always returns <see cref="FtpResponses.TransferComplete"/>.</returns>
-        private async Task<IResponse> WriteFileList(Stream dataStream, FtpSessionState session, IEnumerable<FileSystemItem> items)
+        private async Task<IResponse> WriteFileList(
+            Stream dataStream,
+            FtpSessionState session,
+            IEnumerable<FileSystemItem> items,
+            CancellationToken cancellation)
         {
             var record = new StringBuilder(128);
             byte[] recordBuffer;
@@ -138,15 +144,15 @@ namespace ZeptoServer.Ftp.Commands
                 record.Append(item.Name);
 
                 recordBuffer = session.PathEncoding.GetBytes(record.ToString());
-                await dataStream.WriteAsync(recordBuffer, 0, recordBuffer.Length);
-                await dataStream.WriteAsync(session.LineFeed, 0, session.LineFeed.Length);
+                await dataStream.WriteAsync(recordBuffer, 0, recordBuffer.Length, cancellation);
+                await dataStream.WriteAsync(session.LineFeed, 0, session.LineFeed.Length, cancellation);
 
                 record.Clear();
             }
             
-            await dataStream.WriteAsync(session.LineFeed, 0, session.LineFeed.Length);
+            await dataStream.WriteAsync(session.LineFeed, 0, session.LineFeed.Length, cancellation);
 
-            await dataStream.FlushAsync();
+            await dataStream.FlushAsync(cancellation);
 
             return FtpResponses.TransferComplete;
         }

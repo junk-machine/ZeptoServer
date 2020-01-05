@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using ZeptoServer.Ftp.Configuration;
 using ZeptoServer.Ftp.FileSystems;
 using ZeptoServer.Telnet.Responses;
@@ -40,8 +42,9 @@ namespace ZeptoServer.Ftp.Commands
         /// </summary>
         /// <param name="arguments">Command arguments</param>
         /// <param name="session">FTP session context</param>
+        /// <param name="cancellation">Cancellation token</param>
         /// <returns>FTP server response to send to the client.</returns>
-        protected override IResponse Handle(string arguments, FtpSessionState session)
+        protected override Task<IResponse> Handle(string arguments, FtpSessionState session, CancellationToken cancellation)
         {
             var user =
                 knownUsers
@@ -56,7 +59,7 @@ namespace ZeptoServer.Ftp.Commands
                     session.Username,
                     arguments);
 
-                return FtpResponses.NotLoggedIn;
+                return FtpResponsesAsync.NotLoggedIn;
             }
 
             session.FileSystem = user.FileSystem;
@@ -64,7 +67,7 @@ namespace ZeptoServer.Ftp.Commands
 
             session.Logger.WriteInfo(TraceResources.UserLoggedInFormat, session.Username);
 
-            return FtpResponses.LoggedIn;
+            return FtpResponsesAsync.LoggedIn;
         }
     }
 }

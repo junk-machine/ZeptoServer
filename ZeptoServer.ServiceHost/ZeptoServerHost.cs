@@ -3,6 +3,7 @@ using System.Configuration;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Markup;
+using ZeptoServer.Configuration.Xml;
 using ZeptoServer.ServiceHost.Configuration;
 
 namespace ZeptoServer.ServiceHost
@@ -34,14 +35,8 @@ namespace ZeptoServer.ServiceHost
             }
 
             using (var serverHost =
-                XamlReader.Parse(configSection.ServerHostConfiguration)
-                    as ServerHost)
+                new XmlConfigurationLoader().Load<ServerHost>(configSection.ServerHostConfiguration))
             {
-                if (serverHost == null)
-                {
-                    throw Errors.RootIsNotServerHost();
-                }
-
                 try
                 {
                     await Task.Delay(-1, cancelToken);

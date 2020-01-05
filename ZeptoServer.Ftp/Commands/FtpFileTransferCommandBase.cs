@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Threading;
+using System.Threading.Tasks;
 
 namespace ZeptoServer.Ftp.Commands
 {
@@ -21,14 +22,15 @@ namespace ZeptoServer.Ftp.Commands
         /// </summary>
         /// <param name="arguments">Command arguments</param>
         /// <param name="session">FTP session context</param>
+        /// <param name="cancellation">Cancellation token</param>
         /// <returns>A <see cref="Task"/> that represents an asynchronous operation.</returns>
-        protected sealed override Task HandleDataCommand(string arguments, FtpSessionState session)
+        protected sealed override Task HandleDataCommand(string arguments, FtpSessionState session, CancellationToken cancellation)
         {
             var restartOffset = session.TransferRestartOffset;
 
             session.TransferRestartOffset = 0;
 
-            return HandleFileTransferCommand(arguments, session, restartOffset);
+            return HandleFileTransferCommand(arguments, session, restartOffset, cancellation);
         }
 
         /// <summary>
@@ -36,8 +38,9 @@ namespace ZeptoServer.Ftp.Commands
         /// </summary>
         /// <param name="arguments">Command arguments</param>
         /// <param name="session">FTP session context</param>
-        /// <param name="offset">File transfer restart offset</param>
+        /// <param name="restartOffset">File transfer restart offset</param>
+        /// <param name="cancellation">Cancellation token</param>
         /// <returns>A <see cref="Task"/> that represents an asynchronous operation.</returns>
-        protected abstract Task HandleFileTransferCommand(string arguments, FtpSessionState session, long restartOffset);
+        protected abstract Task HandleFileTransferCommand(string arguments, FtpSessionState session, long restartOffset, CancellationToken cancellation);
     }
 }

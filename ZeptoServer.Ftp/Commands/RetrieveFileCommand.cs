@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Threading;
 using System.Threading.Tasks;
 using ZeptoServer.Telnet.Responses;
 
@@ -19,12 +20,17 @@ namespace ZeptoServer.Ftp.Commands
         /// <param name="arguments">Command arguments</param>
         /// <param name="session">FTP session context</param>
         /// <param name="restartOffset">File transfer restart offset</param>
+        /// <param name="cancellation">Cancellation token</param>
         /// <returns>A <see cref="Task"/> that represents an asynchronous operation.</returns>
-        protected override async Task HandleFileTransferCommand(string arguments, FtpSessionState session, long restartOffset)
+        protected override async Task HandleFileTransferCommand(
+            string arguments,
+            FtpSessionState session,
+            long restartOffset,
+            CancellationToken cancellation)
         {
             if (String.IsNullOrEmpty(arguments))
             {
-                await session.ControlChannel.Send(FtpResponses.ParameterSyntaxError);
+                await session.ControlChannel.Send(FtpResponses.ParameterSyntaxError, cancellation);
                 return;
             }
 
@@ -32,11 +38,11 @@ namespace ZeptoServer.Ftp.Commands
 
             if (filePath.Navigate(arguments))
             {
-                using (var fileStream = session.FileSystem.ReadFile(filePath))
+                using (var fileStream = await session.FileSystem.ReadFile(filePath, cancellation))
                 {
                     if (fileStream == null)
                     {
-                        await session.ControlChannel.Send(FtpResponses.FileUnavailable);
+                        await session.ControlChannel.Send(FtpResponses.FileUnavailable, cancellation);
                         return;
                     }
 
@@ -49,13 +55,13 @@ namespace ZeptoServer.Ftp.Commands
                         catch
                         {
                             // If offset is out of range
-                            await session.ControlChannel.Send(FtpResponses.FileUnavailable);
+                            await session.ControlChannel.Send(FtpResponses.FileUnavailable, cancellation);
                             return;
                         }
                         
                     }
                     
-                    if (await WriteToDataChannel(session, SendFile, fileStream) ==
+                    if (await WriteToDataChannel(session, SendFile, fileStream, cancellation) ==
                             FtpResponses.TransferComplete)
                     {
                         session.Logger.WriteInfo(TraceResources.RetrievedFileFormat, filePath);
@@ -64,7 +70,7 @@ namespace ZeptoServer.Ftp.Commands
             }
             else
             {
-                await session.ControlChannel.Send(FtpResponses.FileUnavailable);
+                await session.ControlChannel.Send(FtpResponses.FileUnavailable, cancellation);
             }
         }
 
@@ -74,11 +80,16 @@ namespace ZeptoServer.Ftp.Commands
         /// <param name="dataStream">Data channel stream</param>
         /// <param name="session">FTP session context</param>
         /// <param name="fileStream">Source file stream</param>
+        /// <param name="cancellation">Cancellation token</param>
         /// <returns>Always returns <see cref="FtpResponses.TransferComplete"/>.</returns>
-        private async Task<IResponse> SendFile(Stream dataStream, FtpSessionState session, Stream fileStream)
+        private async Task<IResponse> SendFile(
+            Stream dataStream,
+            FtpSessionState session,
+            Stream fileStream,
+            CancellationToken cancellation)
         {
             await fileStream.CopyToAsync(dataStream);
-            await dataStream.FlushAsync();
+            await dataStream.FlushAsync(cancellation);
 
             return FtpResponses.TransferComplete;
         }

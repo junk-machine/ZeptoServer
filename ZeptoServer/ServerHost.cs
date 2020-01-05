@@ -137,7 +137,7 @@ namespace ZeptoServer
             // Create the server instance to handle all client communications
             serverFactory
                 .Create(clientSocket, loggerScope)
-                .Run();
+                .Run(CancellationToken.None);
         }
 
         /// <summary>

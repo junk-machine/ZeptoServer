@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Net.Sockets;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using ZeptoServer.Log;
 using ZeptoServer.Telnet.Responses;
@@ -48,8 +49,9 @@ namespace ZeptoServer.Telnet
         /// Attempts to process the command if it was received in full.
         /// </summary>
         /// <param name="data">Received from the client so far</param>
+        /// <param name="cancellation">Cancellation token</param>
         /// <returns>A <see cref="Task"/> that represents an asynchronous operation.</returns>
-        protected sealed override async Task OnData(ArrayBuffer data)
+        protected sealed override async Task OnData(ArrayBuffer data, CancellationToken cancellation)
         {
             if (data.EndsWith(lineFeed))
             {
@@ -64,7 +66,8 @@ namespace ZeptoServer.Telnet
                     data.ToString(0, commandLength, Encoding.ASCII),
                     argumentsLength > 0
                         ? data.GetView(commandLength + 1, argumentsLength)
-                        : ArrayBufferView.Empty);
+                        : ArrayBufferView.Empty,
+                    cancellation);
 
                 data.Clear();
             }
@@ -75,20 +78,22 @@ namespace ZeptoServer.Telnet
         /// </summary>
         /// <param name="command">Command name</param>
         /// <param name="arguments">Command arguments</param>
+        /// <param name="cancellation">Cancellation token</param>
         /// <returns>A <see cref="Task"/> that represents an asynchronous operation.</returns>
-        protected abstract Task OnCommand(string command, IArrayBufferView arguments);
+        protected abstract Task OnCommand(string command, IArrayBufferView arguments, CancellationToken cancellation);
 
         /// <summary>
         /// Sends the Telnet server response to the client.
         /// </summary>
         /// <param name="response">Telnet server response</param>
+        /// <param name="cancellation">Cancellation token</param>
         /// <returns>A <see cref="Task"/> that represents an asynchronous operation.</returns>
-        public async Task Send(IResponse response)
+        public async Task Send(IResponse response, CancellationToken cancellation)
         {
             LogResponse(response);
 
-            await WriteData(response);
-            await WriteData(lineFeed);
+            await WriteData(response, cancellation);
+            await WriteData(lineFeed, cancellation);
         }
 
         #region Logging

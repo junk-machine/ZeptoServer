@@ -54,7 +54,7 @@ namespace ZeptoServer.Utilities
                 Array.Resize(ref buffer, buffer.Length * 2);
             }
 
-            Array.Copy(data, index, buffer, Length, length);
+            Buffer.BlockCopy(data, index, buffer, Length, length);
 
             Length += length;
         }

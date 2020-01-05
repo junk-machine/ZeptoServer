@@ -1,4 +1,6 @@
-﻿using ZeptoServer.Telnet.Responses;
+﻿using System.Threading;
+using System.Threading.Tasks;
+using ZeptoServer.Telnet.Responses;
 
 namespace ZeptoServer.Ftp.Commands
 {
@@ -30,14 +32,15 @@ namespace ZeptoServer.Ftp.Commands
         /// </summary>
         /// <param name="arguments">Command arguments</param>
         /// <param name="session">FTP session context</param>
+        /// <param name="cancellation">Cancellation token</param>
         /// <returns>FTP server response to send to the client.</returns>
-        protected override IResponse Handle(string arguments, FtpSessionState session)
+        protected override Task<IResponse> Handle(string arguments, FtpSessionState session, CancellationToken cancellation)
         {
             var typeArguments = arguments.Split(' ');
 
             if (typeArguments.Length == 0)
             {
-                return FtpResponses.ParameterSyntaxError;
+                return FtpResponsesAsync.ParameterSyntaxError;
             }
 
             switch (typeArguments[0])
@@ -50,20 +53,20 @@ namespace ZeptoServer.Ftp.Commands
                         switch (typeArguments[1])
                         {
                             case NonPrintFormat:
-                                return FtpResponses.Success;
+                                return FtpResponsesAsync.Success;
                             default:
-                                return FtpResponses.NotImplementedForParameter;
+                                return FtpResponsesAsync.NotImplementedForParameter;
                         }
                     }
 
-                    return FtpResponses.Success;
+                    return FtpResponsesAsync.Success;
 
                 case ImageTransferType:
                     session.TransferType = FileTransferType.Image;
-                    return FtpResponses.Success;
+                    return FtpResponsesAsync.Success;
 
                 default:
-                    return FtpResponses.NotImplementedForParameter;
+                    return FtpResponsesAsync.NotImplementedForParameter;
             }
         }
     }

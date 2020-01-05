@@ -1,4 +1,6 @@
 ﻿using System.Net;
+using System.Threading;
+using System.Threading.Tasks;
 using ZeptoServer.Ftp.Data;
 using ZeptoServer.Log;
 using ZeptoServer.Telnet.Responses;
@@ -18,8 +20,9 @@ namespace ZeptoServer.Ftp.Commands
         /// </summary>
         /// <param name="arguments">Command arguments</param>
         /// <param name="session">FTP session context</param>
+        /// <param name="cancellation">Cancellation token</param>
         /// <returns>FTP server response to send to the client.</returns>
-        protected override IResponse Handle(string arguments, FtpSessionState session)
+        protected override Task<IResponse> Handle(string arguments, FtpSessionState session, CancellationToken cancellation)
         {
             var channel =
                 new PassiveDataChannel(
@@ -29,7 +32,7 @@ namespace ZeptoServer.Ftp.Commands
             session.DataChannel = channel;
                 
             return
-                FtpResponses.PassiveMode(
+                FtpResponsesAsync.PassiveMode(
                     session.PublicServerAddress.GetAddressBytes(),
                     channel.EndPoint.Port);
         }

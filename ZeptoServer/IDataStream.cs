@@ -1,4 +1,5 @@
 ﻿using System.IO;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace ZeptoServer
@@ -12,7 +13,8 @@ namespace ZeptoServer
         /// Writes all the data into another stream.
         /// </summary>
         /// <param name="stream">Stream to write data to</param>
+        /// <param name="cancellation">Cancellation token</param>
         /// <returns>A <see cref="Task"/> that represents an asynchronous operation.</returns>
-        Task WriteTo(Stream stream);
+        Task WriteTo(Stream stream, CancellationToken cancellation);
     }
 }

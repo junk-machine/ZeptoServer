@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 using ZeptoServer.Telnet.Responses;
 
 namespace ZeptoServer.Ftp.Commands
@@ -17,21 +19,22 @@ namespace ZeptoServer.Ftp.Commands
         /// </summary>
         /// <param name="arguments">Command arguments</param>
         /// <param name="session">FTP session context</param>
+        /// <param name="cancellation">Cancellation token</param>
         /// <returns>FTP server response to send to the client.</returns>
-        protected override IResponse Handle(string arguments, FtpSessionState session)
+        protected override Task<IResponse> Handle(string arguments, FtpSessionState session, CancellationToken cancellation)
         {
             var optionArguments = arguments.Split(' ');
 
             if (optionArguments.Length == 0)
             {
-                return FtpResponses.ParameterSyntaxError;
+                return FtpResponsesAsync.ParameterSyntaxError;
             }
 
             if (FtpOptions.UTF8.Equals(optionArguments[0], StringComparison.OrdinalIgnoreCase))
             {
                 if (optionArguments.Length == 1)
                 {
-                    return FtpResponses.ParameterSyntaxError;
+                    return FtpResponsesAsync.ParameterSyntaxError;
                 }
 
                 if (FtpOptions.SetOn.Equals(optionArguments[1], StringComparison.OrdinalIgnoreCase))
@@ -44,20 +47,20 @@ namespace ZeptoServer.Ftp.Commands
                 }
                 else
                 {
-                    return FtpResponses.ParameterSyntaxError;
+                    return FtpResponsesAsync.ParameterSyntaxError;
                 }
 
-                return FtpResponses.Success;
+                return FtpResponsesAsync.Success;
             }
             else if (FtpOptions.UTF_8.Equals(optionArguments[0], StringComparison.OrdinalIgnoreCase))
             {
                 session.PathEncoding = Encoding.UTF8;
                 // TODO: Support NLST argument
-                return FtpResponses.Success;
+                return FtpResponsesAsync.Success;
             }
             else
             {
-                return FtpResponses.ParameterSyntaxError;
+                return FtpResponsesAsync.ParameterSyntaxError;
             }
         }
     }

@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Threading;
+using System.Threading.Tasks;
 using ZeptoServer.Telnet.Responses;
 
 namespace ZeptoServer.Ftp.Commands
@@ -16,8 +18,9 @@ namespace ZeptoServer.Ftp.Commands
         /// </summary>
         /// <param name="arguments">Command arguments</param>
         /// <param name="session">FTP session context</param>
+        /// <param name="cancellation">Cancellation token</param>
         /// <returns>FTP server response to send to the client.</returns>
-        protected override IResponse Handle(string arguments, FtpSessionState session)
+        protected override async Task<IResponse> Handle(string arguments, FtpSessionState session, CancellationToken cancellation)
         {
             if (String.IsNullOrEmpty(arguments))
             {
@@ -26,7 +29,7 @@ namespace ZeptoServer.Ftp.Commands
 
             var itemPath = session.CurrentDirectory.Clone();
 
-            if (itemPath.Navigate(arguments) && session.FileSystem.CreateDirectory(itemPath))
+            if (itemPath.Navigate(arguments) && await session.FileSystem.CreateDirectory(itemPath, cancellation))
             {
                 var itemPathString = itemPath.ToString();
                 session.Logger.WriteInfo(TraceResources.CreatedDirectoryFormat, itemPathString);

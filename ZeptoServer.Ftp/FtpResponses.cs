@@ -137,6 +137,7 @@ namespace ZeptoServer.Ftp
         /// </summary>
         /// <param name="features">List of supported features</param>
         /// <param name="lineFeed">Line separator sequence</param>
+        /// <returns>Response to the client listing features supported by the server.</returns>
         public static IResponse Features(IEnumerable<string> features, byte[] lineFeed)
         {
             return new ListResponse(211, FtpMessages.Features, features, lineFeed);
@@ -146,6 +147,7 @@ namespace ZeptoServer.Ftp
         /// Response to file-related commands, e.g. MDTM, SIZE.
         /// </summary>
         /// <param name="status">File status info</param>
+        /// <returns>Response to the client containing file status.</returns>
         public static IResponse FileStatus(string status)
         {
             return new MessageResponse(213, status);
@@ -156,6 +158,7 @@ namespace ZeptoServer.Ftp
         /// </summary>
         /// <param name="address">Listener address segments</param>
         /// <param name="port">Listener port number</param>
+        /// <returns>Response to the client containing information about passive mode listener.</returns>
         public static IResponse PassiveMode(byte[] address, int port)
         {
             return new MessageResponse(
@@ -172,6 +175,7 @@ namespace ZeptoServer.Ftp
         /// </summary>
         /// <param name="path">Full path</param>
         /// <param name="encoding">Path encoding to use</param>
+        /// <returns>Response to the client with the current path.</returns>
         public static IResponse Path(string path, Encoding encoding)
         {
             return new PathResponse(257, path, encoding);

@@ -68,13 +68,14 @@ namespace ZeptoServer
         /// <summary>
         /// Runs the server.
         /// </summary>
+        /// <param name="cancellation">Cancellation token</param>
         /// <returns>A <see cref="Task"/> that represents an asynchronous operation.</returns>
-        public async Task Run()
+        public async Task Run(CancellationToken cancellation)
         {
             try
             {
-                await OnStart();
-                await ReadData();
+                await OnStart(cancellation);
+                await ReadData(cancellation);
             }
             catch (Exception error)
             {
@@ -86,24 +87,31 @@ namespace ZeptoServer
         /// <summary>
         /// Performs all necessary actions when server starts.
         /// </summary>
+        /// <param name="cancellation">Cancellation token</param>
         /// <returns>A <see cref="Task"/> that represents an asynchronous operation.</returns>
-        protected abstract Task OnStart();
+        protected abstract Task OnStart(CancellationToken cancellation);
 
         /// <summary>
         /// Reads the data from the client.
         /// </summary>
+        /// <param name="cancellation">Cancellation token</param>
         /// <returns>A <see cref="Task"/> that represents an asynchronous operation.</returns>
-        private async Task ReadData()
+        private async Task ReadData(CancellationToken cancellation)
         {
             int count;
 
-            while ((count = await ReadDataSafe()) > 0)
+            while ((count = await ReadDataSafe(CancellationToken.None)) > 0)
             {
+                if (cancellation.IsCancellationRequested)
+                {
+                    break;
+                }
+
                 LogRawRequest(buffer, count);
 
                 data.Append(buffer, 0, count);
 
-                await OnData(data);
+                await OnData(data, CancellationToken.None);
 
                 // Done processing the request, start listening again
                 Logger.WriteDebug(TraceResources.AccumulatedDataProcessed);
@@ -117,12 +125,13 @@ namespace ZeptoServer
         /// <summary>
         /// Reads data in a safe manner, so that no exceptions are being thrown.
         /// </summary>
+        /// <param name="cancellation">Cancellation token</param>
         /// <returns>Number of bytes read from the client.</returns>
-        private async Task<int> ReadDataSafe()
+        private async Task<int> ReadDataSafe(CancellationToken cancellation)
         {
             try
             {
-                return await dataStream.ReadAsync(buffer, 0, buffer.Length);
+                return await dataStream.ReadAsync(buffer, 0, buffer.Length, cancellation);
             }
             catch (Exception error)
             {
@@ -135,27 +144,30 @@ namespace ZeptoServer
         /// Performs processing of all the accumulated data received from the client.
         /// </summary>
         /// <param name="data">Data received from the client so far</param>
+        /// <param name="cancellation">Cancellation token</param>
         /// <returns>A <see cref="Task"/> that represents an asynchronous operation.</returns>
-        protected abstract Task OnData(ArrayBuffer data);
+        protected abstract Task OnData(ArrayBuffer data, CancellationToken cancellation);
 
         /// <summary>
         /// Send data from the provided <see cref="IDataStream"/> to the client.
         /// </summary>
         /// <param name="data">Data stream to read the data to be sent</param>
+        /// <param name="cancellation">Cancellation token</param>
         /// <returns>A <see cref="Task"/> that represents an asynchronous operation.</returns>
-        protected Task WriteData(IDataStream data)
+        protected Task WriteData(IDataStream data, CancellationToken cancellation)
         {
-            return data.WriteTo(dataStream);
+            return data.WriteTo(dataStream, cancellation);
         }
 
         /// <summary>
         /// Sends the data to the client.
         /// </summary>
         /// <param name="data">Data to send</param>
+        /// <param name="cancellation">Cancellation token</param>
         /// <returns>A <see cref="Task"/> that represents an asynchronous operation.</returns>
-        protected Task WriteData(byte[] data)
+        protected Task WriteData(byte[] data, CancellationToken cancellation)
         {
-            return dataStream.WriteAsync(data, 0, data.Length);
+            return dataStream.WriteAsync(data, 0, data.Length, cancellation);
         }
 
         /// <summary>
